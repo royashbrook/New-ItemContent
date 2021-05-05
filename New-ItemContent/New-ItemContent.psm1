@@ -2,7 +2,7 @@ function New-ItemContent($cfg, $file, $type = "sql") {
     #we already have more types in other jobs
     # those will be consolidated here as well
     switch ($type) {
-        "sql" { New-ItemContentWithSql $cfg, $sql; break;}
+        "sql" { New-ItemContentWithSql $cfg, $file; break;}
         # "sql" { New-ItemContentWithSql $cfg, $sql; break;}
         default {
             "Nothing generated"

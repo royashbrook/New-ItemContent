@@ -1,6 +1,6 @@
 @{
     RootModule = 'New-ItemContent.psm1'
-    ModuleVersion = '1.0.0.0'
+    ModuleVersion = '1.0.0.1'
     GUID = '44a086a3-36fb-48d2-90a1-eaec05bae2d5'
     Author = 'Roy Ashbrook'
     CompanyName = 'ashbrook.io'
