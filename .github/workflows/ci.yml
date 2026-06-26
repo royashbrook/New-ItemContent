@@ -1,0 +1,18 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: validate module
+        shell: pwsh
+        run: |
+          Install-Module Add-PrefixForLogging -Force -Scope CurrentUser
+          Test-ModuleManifest -Path 'New-ItemContent/New-ItemContent.psd1'
+          Import-Module './New-ItemContent/New-ItemContent.psd1' -Force
+          Get-Command -Module New-ItemContent
