@@ -1,7 +1,8 @@
 @{
     RootModule = 'New-ItemContent.psm1'
-    ModuleVersion = '1.0.0.2'
+    ModuleVersion = '1.0.0.3'
     GUID = '44a086a3-36fb-48d2-90a1-eaec05bae2d5'
+    RequiredModules = @('Add-PrefixForLogging')
     Author = 'Roy Ashbrook'
     CompanyName = 'ashbrook.io'
     Copyright = '(c) 2021 royashbrook. All rights reserved.'

@@ -7,9 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
-        
-      - name: Publishing
+        uses: actions/checkout@v7
+
+      - name: validate manifest
+        run: |
+          Install-Module Add-PrefixForLogging -Force -Scope CurrentUser
+          Test-ModuleManifest -Path 'New-ItemContent/New-ItemContent.psd1'
+        shell: pwsh
+
+      - name: publish
         run: |
           Publish-Module -Path 'New-ItemContent' -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
         shell: pwsh
