@@ -1,6 +1,6 @@
 @{
     RootModule = 'New-ItemContent.psm1'
-    ModuleVersion = '1.0.0.4'
+    ModuleVersion = '1.0.0.5'
     GUID = '44a086a3-36fb-48d2-90a1-eaec05bae2d5'
     Author = 'Roy Ashbrook'
     CompanyName = 'royashbrook.com'
@@ -17,7 +17,7 @@
             Tags = @('msgraph','sharepoint','sql','kpi')
             LicenseUri = 'https://github.com/royashbrook/New-ItemContent/blob/main/LICENSE'
             ProjectUri = 'https://github.com/royashbrook/New-ItemContent'
-            ReleaseNotes = 'Align to the current feed shape: per-table .sql via Invoke-Sqlcmd, connection string from the env var named by csname, structured datasets/tables, empty-table abort. Requires PowerShell 7. Keeps Add-PrefixForLogging as a RequiredModule.'
+            ReleaseNotes = 'Empty-table handling is now optional. Default is unchanged (an empty table aborts the run, backwards compatible). Set allowEmpty = $true at the table, dataset, or feed (cfg) level to tolerate + emit empty tables.'
         }
     }
 }

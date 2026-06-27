@@ -1,5 +1,11 @@
 function New-ItemContent($cfg, $file) {
 
+    # allowEmpty (default $false) controls whether an empty table aborts the run. Read it strict-mode-safe
+    # from a level, treating an absent property as $false. Precedence: table, then dataset, then feed (cfg).
+    function script:Test-AllowEmpty($o) {
+        [bool]($o.PSObject.Properties['allowEmpty']) -and [bool]$o.allowEmpty
+    }
+
     $Results = @{}
     foreach ($DataSetConfig in $cfg.datasets) {
         $DataSetName = $DataSetConfig.name
@@ -19,8 +25,15 @@ function New-ItemContent($cfg, $file) {
                 Select-Object * -ExcludeProperty ItemArray, Table, RowError, RowState, HasErrors
 
             if (($Result | Measure-Object).count -eq 0) {
-                l "$DataSetName.$TableName is empty. Aborting."
-                return
+                # By default an empty table aborts the whole run, to protect feeds that must never ship a
+                # dataset with a missing table. Opt out by setting allowEmpty = $true at the table, dataset,
+                # or feed (cfg) level; the empty table is then emitted as an empty array.
+                $allowEmpty = (Test-AllowEmpty $Table) -or (Test-AllowEmpty $DataSetConfig) -or (Test-AllowEmpty $cfg)
+                if (-not $allowEmpty) {
+                    l "$DataSetName.$TableName is empty. Aborting."
+                    return
+                }
+                l "$DataSetName.$TableName is empty. allowEmpty is set, keeping it."
             }
             $Results.$DataSetName.$TableName = @($Result)
         }
