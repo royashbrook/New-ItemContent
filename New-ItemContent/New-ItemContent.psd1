@@ -1,6 +1,6 @@
 @{
     RootModule = 'New-ItemContent.psm1'
-    ModuleVersion = '1.0.0.5'
+    ModuleVersion = '1.0.0.6'
     GUID = '44a086a3-36fb-48d2-90a1-eaec05bae2d5'
     Author = 'Roy Ashbrook'
     CompanyName = 'royashbrook.com'
@@ -17,7 +17,7 @@
             Tags = @('msgraph','sharepoint','sql','kpi')
             LicenseUri = 'https://github.com/royashbrook/New-ItemContent/blob/main/LICENSE'
             ProjectUri = 'https://github.com/royashbrook/New-ItemContent'
-            ReleaseNotes = 'Empty-table handling is now optional. Default is unchanged (an empty table aborts the run, backwards compatible). Set allowEmpty = $true at the table, dataset, or feed (cfg) level to tolerate + emit empty tables.'
+            ReleaseNotes = '1.0.0.6: fix allowEmpty emitting [null] instead of [] for an empty table (an empty result set is $null, and @($null) is a 1-element array holding $null). Also abort loudly (throw) when the config has no non-empty datasets, or a dataset has no non-empty tables, instead of silently writing an empty {} or a dataset with no tables over the live item.'
         }
     }
 }
