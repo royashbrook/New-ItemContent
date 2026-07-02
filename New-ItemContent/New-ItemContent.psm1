@@ -7,11 +7,20 @@ function New-ItemContent($cfg, $file) {
     }
 
     $Results = @{}
+    # a shape-broken but valid-JSON config (missing/typo'd 'datasets') would otherwise fall straight
+    # through to an empty {} upload over the live item. fail loud instead. strict-mode-safe read.
+    if (-not ($cfg.PSObject.Properties['datasets'] -and $cfg.datasets)) {
+        throw "config has no non-empty 'datasets'. Refusing to write an empty object over the live item."
+    }
     foreach ($DataSetConfig in $cfg.datasets) {
         $DataSetName = $DataSetConfig.name
         l "Processing Dataset: $DataSetName"
         $Results.$DataSetName = @{}
         $Results.$DataSetName.tds = Get-Date -Format "o"
+        # same guard one level down: a dataset with no tables would ship {tds:...} and nothing else.
+        if (-not ($DataSetConfig.PSObject.Properties['tables'] -and $DataSetConfig.tables)) {
+            throw "Dataset '$DataSetName' has no non-empty 'tables'. Refusing to write an empty dataset."
+        }
         foreach ($Table in $DataSetConfig.tables) {
             $Result = $null
             $TableName = $Table.name
@@ -35,7 +44,11 @@ function New-ItemContent($cfg, $file) {
                 }
                 l "$DataSetName.$TableName is empty. allowEmpty is set, keeping it."
             }
-            $Results.$DataSetName.$TableName = @($Result)
+            # an empty result set is $null; a bare @($Result) then serializes as [null] (a 1-element array
+            # holding $null, a phantom row that breaks consumers). filter the null so empty => [] while any
+            # real row set is unchanged. keep this DIRECT: wrapping it in an if/else would unroll a single-
+            # row array back to a bare object and break the [{...}] contract.
+            $Results.$DataSetName.$TableName = @($Result | Where-Object { $null -ne $_ })
         }
     }
     $Results | ConvertTo-Json -Depth 100 | Add-Content $file             
